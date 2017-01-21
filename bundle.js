@@ -20,7 +20,7 @@ function init() {
   const bezierCurve = curve.create(
     point.create(-0.5, -0.5),
     point.create(0.5, -0.5),
-    point.create(0, 0)
+    point.create(0, -0.5)
   );
 
   slider.addEventListener('input', () => {
