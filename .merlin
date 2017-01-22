@@ -1,2 +1,2 @@
 S ./src
-B ./lib/bs/src/**
+B ./lib/bs/ocaml/**

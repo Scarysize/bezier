@@ -1,6 +1,9 @@
 open Curve;;
 open Point;;
 
+(**
+ * Evaluate the cubic bezier curve at a given point.
+ *)
 let evaluate curve t =
   let tMinus1 = t -. 1.0 in
   let tSquared = t**2.0 in
@@ -14,14 +17,20 @@ let evaluate curve t =
     tSquared *. curve.b.y in
   Point.create x y;;
 
+(**
+ * Recursivly evaluate the cubic bezier curve with a given step size.
+ *)
+let rec sample_inner start stepSize curve =
+  if stepSize > 1.0 then []
+  else
+    begin
+      let point = evaluate curve stepSize in
+      let nextStep = stepSize +. start in
+      point :: (sample_inner start nextStep curve)
+    end
+
 let sample curve stepSize =
-  let points = ref [||] in
-  let i = ref stepSize in
-  while !i < 1.0 do
-    let p = evaluate curve !i in
-    points := Array.append !points [|p; p|];
-    i := !i +. stepSize
-  done;
-  points := Array.append [|curve.a|] !points;
-  points := Array.append !points [|curve.b|];
-  !points;;
+  let inner = (sample_inner stepSize stepSize curve) in
+  let withStart = curve.a :: inner in
+  let complete = List.append withStart [curve.b] in
+  Array.of_list complete
