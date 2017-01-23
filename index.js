@@ -1,3 +1,5 @@
+const getNormals = require('polyline-normals');
+
 const bezier = require('./lib/js/ocaml/bezier');
 const curve = require('./lib/js/ocaml/curve');
 const point = require('./lib/js/ocaml/point');
@@ -21,11 +23,35 @@ const clear = () =>
  */
 function update(bezierCurve, stepSize) {
   const step = Math.min(0.5, Math.max(0.01, stepSize));
-  const line = bezier.sample(bezierCurve, step);
+  //const line = bezier.sample(bezierCurve, step);
+  const line = [[-0.5, 0], [0.5, 0], [-0.5, 0]];
 
+  const normals = [];
+  const miters = [];
+  getNormals(line).forEach((item, index) => {
+    const normal = item[0];
+    const miter = item[1];
+    const flippedMiter = -miter;
+
+    normals.push(normal, normal);
+    miters.push(flippedMiter, miter);
+  });
+
+  const positions = [];
+  line.forEach(point => positions.push(point, point));
+
+  const lineAttributes = {
+    positions,
+    normals,
+    miters
+  };
+  const lineUniforms = {
+    color: [1, 1, 1, 1],
+    thickness: 0.1
+  };
   clear();
-  drawLines(regl, line);
-  drawPoints(regl, line);
+  drawLines(regl, lineAttributes, lineUniforms);
+  //drawPoints(regl, line);
 }
 
 function init() {
