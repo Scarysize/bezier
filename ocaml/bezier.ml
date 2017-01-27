@@ -5,7 +5,7 @@ open Point;;
  * Evaluate the cubic bezier curve at a given point.
  *)
 let evaluate curve t =
-  let tMinus1 = t -. 1.0 in
+  let tMinus1 = 1.0 -. t in
   let tSquared = t**2.0 in
   let x =
     tMinus1**2.0 *. curve.a.x +.
