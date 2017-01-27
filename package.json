@@ -3,7 +3,7 @@
     "bs-platform": "1.3.3"
   },
   "scripts": {
-    "build": "bsb && browserify index.js > bundle.js",
+    "build": "bsb && browserify -t glslify index.js > bundle.js",
     "watch:buckle": "bsb -w",
     "watch:js": "watchify -vd -t glslify index.js -o bundle.js",
     "watch": "npm-run-all --parallel watch:*"
