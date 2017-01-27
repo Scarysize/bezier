@@ -1,35 +1,43 @@
-exports.drawLines = (regl, attributes, uniforms) => {
-  regl({
-    frag: `
-      precision mediump float;
-      uniform vec4 color;
-      void main () {
-        gl_FragColor = color;
-      }
-    `,
-    vert: `
-      precision mediump float;
-      attribute vec2 position;
-      attribute vec2 normal;
-      attribute float miter;
+const mat4 = require('gl-mat4');
 
-      uniform float thickness;
+const glsl = require('glslify');
+const vertexShader = glsl.file('./vertex.glsl');
+const fragmentShader = glsl.file('./fragment.glsl');
 
-      void main () {
-        vec2 p = position.xy + vec2(normal * thickness/2.0 * miter);
-        gl_Position = vec4(p, 0, 1);
-      }
-    `,
-    attributes: {
-      normal: attributes.normals,
-      miter: attributes.miters,
-      position: attributes.positions
-    },
-    uniforms: {
-      color: uniforms.color || [1, 1, 1, 1],
-      thickness: uniforms.thickness
-    },
-    count: attributes.positions.length - 1,
-    primitive: 'triangles'
-  })();
+function createDrawLine(regl, canvas) {
+  const model = mat4.identity(mat4.create());
+  const view = mat4.identity(mat4.create());
+  const getProjection = () => mat4.ortho(
+    [],
+    0,      // left
+    canvas.width,  // right
+    canvas.height, // bottom
+    0,      // top
+    0,      // near
+    1       // far
+  );
+
+  function drawLine(attributes, uniforms, elements) {
+    regl({
+      frag: fragmentShader,
+      vert: vertexShader,
+      attributes: {
+        normal: attributes.normals,
+        miter: attributes.miters,
+        position: attributes.positions
+      },
+      uniforms: {
+        color: uniforms.color || [1, 1, 1, 1],
+        thickness: uniforms.thickness,
+        model,
+        view,
+        projection: getProjection
+      },
+      elements
+    })();
+  }
+
+  return drawLine;
 }
+
+exports.createDrawLine = createDrawLine;

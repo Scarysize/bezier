@@ -5,12 +5,15 @@
   "scripts": {
     "build": "bsb && browserify index.js > bundle.js",
     "watch:buckle": "bsb -w",
-    "watch:js": "watchify -vd index.js -o bundle.js",
+    "watch:js": "watchify -vd -t glslify index.js -o bundle.js",
     "watch": "npm-run-all --parallel watch:*"
   },
   "devDependencies": {
     "browserify": "^13.3.0",
     "bs-platform": "^1.3.3",
+    "canvas-fit": "^1.5.0",
+    "gl-mat4": "^1.1.4",
+    "glslify": "^6.0.1",
     "npm-run-all": "^4.0.1",
     "polyline-normals": "^2.0.2",
     "regl": "^1.3.0",
