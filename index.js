@@ -8,8 +8,8 @@ const curve = require('./lib/js/ocaml/curve');
 const point = require('./lib/js/ocaml/point');
 
 /* JS MODULES */
-const {createDrawLine} = require('./js/draw-lines');
-const {drawPoints} = require('./js/draw-points');
+const createDrawLine = require('./js/draw-lines');
+const createDrawPoints = require('./js/draw-points');
 
 const canvas = document.querySelector('canvas');
 canvas.width = window.innerWidth / 2;
@@ -17,6 +17,7 @@ canvas.height = window.innerWidth / 2;
 const regl = require('regl')(canvas);
 
 const drawLine = createDrawLine(regl, canvas);
+const drawPoints = createDrawPoints(regl, canvas);
 
 const clear = () =>
   regl.clear({
@@ -72,18 +73,43 @@ function update(bezierCurve, stepSize) {
   };
   const lineUniforms = {
     color: [1, 1, 1, 1],
-    thickness: 20.0
+    thickness: 5.0
   };
-  const elements = regl.elements({
+  const lineElements = regl.elements({
     type: 'uint16',
     data: indices
   });
+  const pointAttributes = {
+    positions: path
+  };
+  const pointUniforms = {
+    color: [0, 0, 1, 1],
+    pointSize: 4
+  };
+  const curveAttributes = {
+    positions: [
+      curve.getStart(bezierCurve),
+      curve.getControl(bezierCurve),
+      curve.getEnd(bezierCurve),
+    ]
+  };
 
   clear();
+  drawPoints(
+    curveAttributes,
+    {
+      color: [1, 0, 0, 1],
+      pointSize: 7
+    }
+  );
+  drawPoints(
+    pointAttributes,
+    pointUniforms
+  );
   drawLine(
     lineAttributes,
     lineUniforms,
-    elements
+    lineElements
   );
 }
 
@@ -95,7 +121,7 @@ function init() {
   const bezierCurve = curve.create(
     point.create(width * 0.1, height * 0.75),
     point.create(width * 0.9, height * 0.75),
-    point.create(width * 0.1, height * 0.75)
+    point.create(width * 0.5, height * 0.1)
   );
 
   slider.addEventListener('input', () => {

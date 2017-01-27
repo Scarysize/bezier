@@ -1,8 +1,8 @@
 const mat4 = require('gl-mat4');
 
 const glsl = require('glslify');
-const vertexShader = glsl.file('./vertex.glsl');
-const fragmentShader = glsl.file('./fragment.glsl');
+const vertexShader = glsl.file('./line_vert.glsl');
+const fragmentShader = glsl.file('./line_frag.glsl');
 
 function createDrawLine(regl, canvas) {
   const model = mat4.identity(mat4.create());
@@ -40,4 +40,4 @@ function createDrawLine(regl, canvas) {
   return drawLine;
 }
 
-exports.createDrawLine = createDrawLine;
+module.exports = createDrawLine;

@@ -1,27 +1,43 @@
-const WHITE = [1, 1, 1, 1];
+const mat4 = require('gl-mat4');
 
-function drawPoints(regl, points, color = WHITE) {
-  regl({
-    frag: `
-    precision mediump float;
-    uniform vec4 color;
-    void main () {
-      gl_FragColor = color;
-    }`,
-    vert: `
-    precision mediump float;
-    attribute vec2 position;
-    void main () {
-      gl_Position = vec4(position, 0, 1);
-      gl_PointSize = 10.0;
-    }`,
-    attributes: {
-      position: points
-    },
-    uniforms: {color},
-    count: points.length,
-    primitive: 'points'
-  })();
+const glsl = require('glslify');
+const vertexShader = glsl.file('./point_vert.glsl');
+const fragmentShader = glsl.file('./point_frag.glsl');
+
+function createDrawPoints(regl, canvas) {
+  const model = mat4.identity(mat4.create());
+  const view = mat4.identity(mat4.create());
+  const getProjection = () => mat4.ortho(
+    [],
+    0,      // left
+    canvas.width,  // right
+    canvas.height, // bottom
+    0,      // top
+    0,      // near
+    1       // far
+  );
+
+  function drawPoints(attributes, uniforms) {
+    regl({
+      frag: fragmentShader,
+      vert: vertexShader,
+      attributes: {
+        position: attributes.positions
+      },
+      uniforms: {
+        color: uniforms.color || [1, 1, 1, 1],
+        model,
+        view,
+        projection: getProjection,
+        point_size: uniforms.pointSize
+      },
+      count: attributes.positions.length,
+      primitive: 'points'
+    })();
+  }
+
+  return drawPoints;
 }
 
-exports.drawPoints = drawPoints;
+
+module.exports = createDrawPoints
