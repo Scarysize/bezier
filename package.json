@@ -3,12 +3,16 @@
     "bs-platform": "1.3.3"
   },
   "scripts": {
-    "build": "bsb && browserify -t glslify index.js > bundle.js",
+    "build": "bsb && browserify -t glslify -t babelify index.js > assets/bundle.js && npm run uglify",
     "watch:buckle": "bsb -w",
-    "watch:js": "watchify -vd -t glslify index.js -o bundle.js",
+    "uglify": "uglifyjs assets/bundle.js --compress --mangle -o assets/bundle.js",
+    "watch:js": "watchify -vd -t glslify index.js -o assets/bundle.js",
     "watch": "npm-run-all --parallel watch:*"
   },
   "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-preset-es2015": "^6.22.0",
+    "babelify": "^7.3.0",
     "browserify": "^13.3.0",
     "bs-platform": "^1.3.3",
     "canvas-fit": "^1.5.0",
@@ -17,6 +21,7 @@
     "npm-run-all": "^4.0.1",
     "polyline-normals": "^2.0.2",
     "regl": "^1.3.0",
+    "uglify-js": "^2.7.5",
     "watchify": "^3.8.0"
   }
 }

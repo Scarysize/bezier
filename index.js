@@ -12,15 +12,20 @@ const util = require('./lib/js/ocaml/util');
 const createDrawLine = require('./js/draw-lines');
 const createDrawPoints = require('./js/draw-points');
 const createIndices = require('./js/create-indices');
+const isMobile = require('./js/is-mobile');
 
 const canvas = document.querySelector('canvas');
-canvas.width = window.innerWidth / 2;
-canvas.height = window.innerWidth / 2;
+const size = window.innerWidth * (isMobile()  ? 0.9 : 0.5);
+canvas.width = size;
+canvas.height = size;
 const regl = require('regl')(canvas);
 
 const drawLine = createDrawLine(regl, canvas);
 const drawPoints = createDrawPoints(regl, canvas);
 
+/**
+ * Clears the draw buffer
+ */
 function clear() {
   regl.clear({
     color: [1, 1, 1, 1],
@@ -31,10 +36,15 @@ function clear() {
 /**
  * Updates the rendered line strip.
  * @param  {object} bezierCurve  The curve to sample
- * @param  {number} stepSize  The sampling rate
- * @param  {number} thickness  The thickness of the line
+ * @param  {object} options  The curve options:
+ *   @prop  {number} stepSize  The sampling rate
+ *   @prop  {number} thickness  The thickness of the line
  */
-function update(bezierCurve, stepSize = 0.1, thickness = 0.5) {
+function update(bezierCurve, options) {
+  const {
+    stepSize = 0.1,
+    thickness = 0.5
+  } = options;
   const step = Math.min(0.5, Math.max(0.01, stepSize));
   const path = bezier.sample(bezierCurve, step);
 
@@ -89,17 +99,22 @@ function init() {
   const thicknessIndicator = document.querySelector('.line-thickness');
   thicknessSlider.addEventListener('input', runUpdates);
 
+  const getOptions = () => ({
+    stepSize: slider.value,
+    thickness: thicknessSlider.value
+  });
+
   function runUpdates() {
     const thickness = thicknessSlider.value;
     const stepSize = slider.value;
 
-    update(bezierCurve, stepSize, thickness);
+    update(bezierCurve, getOptions());
 
     indicator.textContent = Number(stepSize).toFixed(2);
     thicknessIndicator.textContent = Number(thickness).toFixed(2);
   }
 
-  update(bezierCurve, slider.value, thicknessSlider.value);
+  update(bezierCurve, getOptions());
 }
 
 init();

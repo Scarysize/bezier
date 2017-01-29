@@ -8,11 +8,8 @@ type curve = {
 
 let create a b control = {a; b; control};;
 
-let getStart curve =
-  curve.a;;
+let getStart curve = curve.a;;
 
-let getEnd curve =
-  curve.b;;
+let getEnd curve = curve.b;;
 
-let getControl curve =
-  curve.control;;
+let getControl curve = curve.control;;

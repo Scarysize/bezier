@@ -2,41 +2,56 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>bezier</title>
-    <style>
-      body, html {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-      }
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .container {
-        position: relative;
-      }
-      .slider {
-        width: 50%;
-        margin-top: 20px;
-      }
-    </style>
+    <title>Quadratic Bezier</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.grey-teal.min.css" />
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="assets/index.css" />
   </head>
   <body>
-    <div class="container">
+    <h1>Quadratic Bezier</h1>
+    <hr />
+
+    <div class="slider-with-value">
+      <label for="t-slider">
+        B(t) = (1 - t)² P₀ + 2 (1 - t) t P₁ + t² P₂, t = 0 ≤ <span class="step-size">0.25</span> ≤ 1
+      </label>
+      <input
+        class="mdl-slider mdl-js-slider slider"
+        id="t-slider"
+        max="0.5"
+        min="0.01"
+        step="0.01"
+        type="range"
+        value="0.25"
+      />
+    </div>
+
+    <div class="slider-with-value">
+      <label for="thickness">
+        Thickness = <span class="line-thickness">0.50</span>
+      </label>
+      <input
+      class="mdl-slider mdl-js-slider thickness"
+      id="thickness"
+      max="30"
+      min="0"
+      step="0.50"
+      type="range"
+      value="5"
+      />
+    </div>
+
+    <div class="canvas-container mdl-shadow--2dp">
       <canvas></canvas>
     </div>
-    <input class="slider" type="range" value="0.1" min="0.01" max="0.5" step="0.01"/>
-    <span>
-      step-size:
-      <span class="step-size">0.1</span>
-    </span>
-    <input class="thickness slider" type="range" value="5" min="0" max="30" step="0.5"/>
-    <span>
-      line-thickness:
-      <span class="line-thickness">0.5</span>
-    </span>
-    <script src="bundle.js"></script>
+
+    <footer>
+      <a href="https://github.com/Scarysize/bezier">github</a>
+      —
+      <a href="https://twitter.com/Scarysize">twitter</a>
+    </footer>
+
+    <script src="assets/bundle.js"></script>
   </body>
 </html>
