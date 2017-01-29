@@ -35,6 +35,7 @@ hr {
   flex-direction: column;
   align-items: center;
   margin-bottom: 24px;
+  min-height: 50px;
 }
 
 .mdl-slider__container {
